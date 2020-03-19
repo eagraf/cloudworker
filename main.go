@@ -21,6 +21,7 @@ func registerWorker() string {
 	// Get ip address from env
 	ip := os.Getenv("CLOUDWORKER_IP")
 
+	fmt.Println(synchronizerURL)
 	// Build http post request to /workers endpoint
 	reqBody, _ := json.Marshal(map[string]interface{}{"ip": ip, "workerType": "cloud_worker"})
 	req, err := http.NewRequest("POST", synchronizerURL+"/workers/", bytes.NewBuffer(reqBody))
