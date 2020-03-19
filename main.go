@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-var synchronizerURL = "172.20.128.2:2216"
+var synchronizerURL = os.Getenv("SYNCHRONIZER_IP")
 
 func main() {
 	uuid := registerWorker()
