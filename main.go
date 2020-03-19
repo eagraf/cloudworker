@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-var synchronizerURL = "http://localhost:2216"
+var synchronizerURL = "172.20.128.2:2216"
 
 func main() {
 	uuid := registerWorker()
