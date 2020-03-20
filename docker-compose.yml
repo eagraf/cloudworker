@@ -1,0 +1,16 @@
+version: "3.7"
+services:
+    synchronizer:
+        image: ethangraf/synchronizer
+        ports:
+            - "2216:2216"
+    cloudworker:
+        build: .
+        depends_on:
+            - synchronizer
+        environment:
+            - SYNCHRONIZER_IP=127.0.0.1:2216
+            - CLOUDWORKER_IP=172.20.128.2
+        volumes:
+            - ./:/go/src/github.com/eagraf/cloudworker
+        network_mode: host
