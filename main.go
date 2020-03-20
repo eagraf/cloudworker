@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-var synchronizerURL = os.Getenv("SYNCHRONIZER_IP")
+//var synchronizerURL = os.Getenv("SYNCHRONIZER_IP")
 
 func main() {
 	uuid := registerWorker()
@@ -21,11 +21,14 @@ func registerWorker() string {
 	// Get ip address from env
 	ip := os.Getenv("CLOUDWORKER_IP")
 
-	fmt.Println(synchronizerURL)
 	// Build http post request to /workers endpoint
 	reqBody, _ := json.Marshal(map[string]interface{}{"ip": ip, "workerType": "cloud_worker"})
-	req, err := http.NewRequest("POST", synchronizerURL+"/workers/", bytes.NewBuffer(reqBody))
+	req, err := http.NewRequest("POST", "http://localhost:2216/workers/", bytes.NewBuffer(reqBody))
 	req.Header.Set("Content-Type", "application/json")
+	if err != nil {
+		panic("Failed to create request: " + err.Error())
+	}
+	fmt.Printf("%v\n", req)
 
 	client := &http.Client{}
 	res, err := client.Do(req)
