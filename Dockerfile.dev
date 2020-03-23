@@ -8,6 +8,8 @@ RUN go get github.com/githubnemo/CompileDaemon
 RUN go get -d -v ./...
 RUN go install -v ./...
 
+RUN go build
+
 RUN chmod +x ./wait.sh
 
 CMD ["./wait.sh"]
