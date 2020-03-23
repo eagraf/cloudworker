@@ -28,7 +28,6 @@ func registerWorker() string {
 	if err != nil {
 		panic("Failed to create request: " + err.Error())
 	}
-	fmt.Printf("%v\n", req)
 
 	client := &http.Client{}
 	res, err := client.Do(req)
