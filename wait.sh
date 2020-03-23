@@ -1,3 +1,5 @@
+#!/bin/bash
+
 until $(curl --silent --fail http://localhost:2216/health); do
     printf '.'
     sleep 5
