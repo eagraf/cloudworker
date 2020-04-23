@@ -1,45 +1,42 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
-	"os"
+
+	"github.com/gorilla/websocket"
 )
 
 //var synchronizerURL = os.Getenv("SYNCHRONIZER_IP")
 
 func main() {
-	uuid := registerWorker()
-	fmt.Println(uuid)
+	connection, err := registerWorker()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	go listen(connection)
+
+	select {}
 }
 
-func registerWorker() string {
+func registerWorker() (*websocket.Conn, error) {
 
-	// Get ip address from env
-	ip := os.Getenv("CLOUDWORKER_IP")
-
-	// Build http post request to /workers endpoint
-	reqBody, _ := json.Marshal(map[string]interface{}{"ip": ip, "workerType": "cloud_worker"})
-	req, err := http.NewRequest("POST", "http://localhost:2216/workers/", bytes.NewBuffer(reqBody))
-	req.Header.Set("Content-Type", "application/json")
+	var dialer websocket.Dialer
+	connection, _, err := dialer.Dial("ws://localhost:2216/workers/register/?workertype=cloud", make(http.Header))
 	if err != nil {
-		panic("Failed to create request: " + err.Error())
+		return nil, err
 	}
 
-	client := &http.Client{}
-	res, err := client.Do(req)
-	if err != nil {
-		panic("Failed to register worker: " + err.Error())
-	}
-	uuid, _ := ioutil.ReadAll(res.Body)
-	defer res.Body.Close()
+	return connection, nil
+}
 
-	if res.Status != "200 OK" {
-		panic("Failed to register worker: " + res.Status + " " + string(uuid))
+func listen(connection *websocket.Conn) {
+	for {
+		_, buffer, err := connection.ReadMessage()
+		if err != nil {
+			return
+		}
+		fmt.Println(string(buffer))
 	}
-
-	return string(uuid)
 }
