@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -92,11 +93,12 @@ func execute(tasks chan *Payload, connection *websocket.Conn) {
 		task := <-tasks
 
 		if task.TaskType == "GOL" {
+			output, start, end := gol(task.Input.Size, task.Input.Board)
 			sendMessage(&map[string]interface{}{
 				"MessageType": "WorkResponse",
-				"Output":      gol(task.Input.Size, task.Input.Board),
-				"start":       1,
-				"end":         2,
+				"Output":      output,
+				"start":       start,
+				"end":         end,
 				"device":      "cloudworker",
 			}, connection)
 
@@ -106,7 +108,8 @@ func execute(tasks chan *Payload, connection *websocket.Conn) {
 	}
 }
 
-func gol(size int, board []int8) []int8 {
+func gol(size int, board []int8) ([]int8, int64, int64) {
+	start := time.Now().UnixNano() / int64(time.Millisecond)
 	result := make([]int8, size*size)
 	for i := 0; i < size*size; i++ {
 		x := i % size
@@ -149,5 +152,6 @@ func gol(size int, board []int8) []int8 {
 			}
 		}
 	}
-	return result
+	end := time.Now().UnixNano() / int64(time.Millisecond)
+	return result, start, end
 }
