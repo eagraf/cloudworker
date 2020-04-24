@@ -58,7 +58,6 @@ func listen(connection *websocket.Conn) {
 		if err != nil {
 			return
 		}
-		fmt.Println(string(buffer))
 
 		// Try to read message into JSON
 		//		var message map[string]interface{}
@@ -67,7 +66,6 @@ func listen(connection *websocket.Conn) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Println(message)
 
 		if message.MessageType == "Intent" {
 			payload := message.Payload
@@ -92,7 +90,6 @@ func sendMessage(message *map[string]interface{}, connection *websocket.Conn) {
 func execute(tasks chan *Payload, connection *websocket.Conn) {
 	for {
 		task := <-tasks
-		fmt.Println("hello")
 
 		if task.TaskType == "GOL" {
 			sendMessage(&map[string]interface{}{
@@ -100,6 +97,7 @@ func execute(tasks chan *Payload, connection *websocket.Conn) {
 				"Output":      gol(task.Input.Size, task.Input.Board),
 				"start":       1,
 				"end":         2,
+				"device":      "cloudworker",
 			}, connection)
 
 		} else {
