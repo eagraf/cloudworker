@@ -56,6 +56,7 @@ func registerWorker() (*websocket.Conn, error) {
 
 func listen(connection *websocket.Conn) {
 	for {
+		fmt.Println("Message received")
 		_, buffer, err := connection.ReadMessage()
 		if err != nil {
 			return
