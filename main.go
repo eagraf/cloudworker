@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -45,7 +46,7 @@ func main() {
 func registerWorker() (*websocket.Conn, error) {
 
 	var dialer websocket.Dialer
-	connection, _, err := dialer.Dial("ws://localhost:2216/workers/register/?workertype=cloud", make(http.Header))
+	connection, _, err := dialer.Dial("ws://"+os.Args[1]+":2216/workers/register/?workertype=cloud", make(http.Header))
 	if err != nil {
 		return nil, err
 	}
